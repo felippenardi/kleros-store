@@ -40,3 +40,25 @@ jobs:
 
       # can access mongo on localhost
       - run: sleep 5 && nc -vz localhost 27017
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-branch:
+          requires:
+            - build
+            - run: echo deploy-branch
+          filters:
+            branches:
+              ignore:
+                - develop
+                - master
+      - deploy-develop:
+          requires:
+            - build
+            - run: echo deploy-develop
+          filters:
+            branches:
+              only: develop
