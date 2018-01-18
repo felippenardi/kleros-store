@@ -3,6 +3,19 @@
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 version: 2
+general:
+  branches:
+    ignore:
+      - gh-pages
+deployment:
+  staging:
+    branch: develop
+    commands:
+      # Generate API DOC
+      - run: yarn add global apidoc
+      - run: apidoc -f "routes/.*\\.js$" -i ./  -o public/apidoc/
+      # Publish API DOC in Github Pages
+      - ./scripts/deploy-ghpages.sh public/apidoc
 jobs:
   build:
     docker:
